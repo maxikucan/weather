@@ -3,14 +3,12 @@ import { fetchData } from "./service/fetchData";
 import Card from "./components/Card";
 
 function App() {
-  const [weatherInfo, setWeatherInfo] = useState([]);
+  const [weatherInfo, setWeatherInfo] = useState({});
   const [inputData, setInputData] = useState("");
   const [city, setCity] = useState("Rosario");
 
-  const URL = `http://api.weatherapi.com/v1/current.json?key=${import.meta.env.VITE_API_KEY}&q=${city}&aqi=no`;
-
   /**
-   * Updates city name state with the word you type in input
+   * Updates city name state with the word you type in input.
    */
   function handleCityName(e) {
     setInputData(e.target.value);
@@ -21,7 +19,11 @@ function App() {
    */
   function handleSubmit(e) {
     e.preventDefault();
-    setCity(inputData);
+
+    /**
+     * Prevent search if input is empty.
+    */
+    if (inputData.length > 0) setCity(inputData);
   }
 
   /**
@@ -31,27 +33,22 @@ function App() {
     /**
      * fetchData will retrieve a promise so we should resolve it to get the data.
      */
-    fetchData(URL).then((weather) => setWeatherInfo(weather));
-  }, [URL]);
+    fetchData(city).then((weather) => setWeatherInfo(weather));
+  }, [city]);
 
   return (
-    <div>
+    <div className="container">
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Search city weather..."
+          maxLength={22}
           onChange={handleCityName}
         />
+        <button>Buscar</button>
       </form>
 
-      <Card
-        city={weatherInfo.location?.name || "No info"}
-        region={weatherInfo.location?.region || "No info"}
-        country={weatherInfo.location?.country || "No info"}
-        weather={weatherInfo.current?.temp_c || "No info"}
-        time={weatherInfo.location?.localtime || "No info"}
-        isDay={weatherInfo.current?.is_day}
-      />
+      <Card info={weatherInfo} />
     </div>
   );
 }

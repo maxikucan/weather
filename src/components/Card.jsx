@@ -1,16 +1,24 @@
 /* eslint-disable react/prop-types */
-function Card(props) {
+export default function Card(props) {
   return (
-    <div>
-      <div>
-        <h4>{props.city}</h4>
-        <h3>{props.weather} C°</h3>
-        <h5>{props.region}</h5>
-        <h5>{props.country}</h5>
-        <small>{props.time}</small>
-      </div>
+    <div className="card">
+      {props.info.location ? (
+        <>
+          <h4>{props.info.location?.name}</h4>
+          <h3>{props.info.current?.temp_c} C°</h3>
+
+          <div className="region-group">
+            <div className="region">
+              <h5>{props.info.location?.region}</h5>
+              <h5>{props.info.location?.country}</h5>
+            </div>
+
+            <small>{props.info.location?.localtime}</small>
+          </div>
+        </>
+      ) : (
+        <h4>No info, please search for another city.</h4>
+      )}
     </div>
   );
 }
-
-export default Card;
